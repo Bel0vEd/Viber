@@ -14,5 +14,6 @@ namespace AgregateMessager.Controllers
 
             return View();
         }
+        //Ваня алкоголик
     }
 }
