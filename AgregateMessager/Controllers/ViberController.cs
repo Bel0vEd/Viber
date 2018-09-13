@@ -11,7 +11,13 @@ namespace AgregateMessager.Controllers
     {
        public void SendMessage(string text)
         {
-            //Накатать код для отправки сообщения в вайбер
+           
+        }
+        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
+        {
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            dtDateTime = dtDateTime.AddMilliseconds(1536582718861).ToLocalTime();
+            return dtDateTime;
         }
 
     }
