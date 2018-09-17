@@ -174,12 +174,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\UserContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\FindNumber.cs" />
-    <Compile Include="Models\MessageModel.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Utilities\opendb.cs" />
     <Compile Include="Utilities\TimeConverter.cs" />
-    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Utilities\WinApi.cs" />
   </ItemGroup>
   <ItemGroup>

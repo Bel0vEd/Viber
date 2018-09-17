@@ -9,7 +9,7 @@ namespace AgregateMessager
     public enum StatusValue { none, erroe, ok }
     public enum MessageStatus { delivered, seen, none }
 
-    public class UserModel
+    public class User
     {
      public StatusValue Status { get; set; }
         public string Name { get; set; }

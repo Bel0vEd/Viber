@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AgregateMessager
 {
-    class MessageModel
+    public class Message
     {
         public string to { get; set; }
         public string type { get; set; }

@@ -57,8 +57,43 @@ namespace AgregateMessager
             catch { }
             return Names;
         }
+        public static List<String> Numbers()
+        //Создает лист Numbers из номеров списка контактов
+        {
+            List<string> Numbers = new List<string>();
 
-         public static List<String> ViberContacts()
+            try
+            {
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM Contact";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var Number = dt.Columns["Number"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (!string.IsNullOrEmpty(dr[Number].ToString()))
+                        Numbers.Add(dr[Number].ToString());
+                }
+
+
+                connection.Close();
+            }
+            catch { }
+            return Numbers;
+        }
+
+        public static List<String> ViberContacts()
         //Создает лист ViberContacts , в котором указано, использует ли контакт Viber; 1-использует, 0 - не использует
         {
             List<string> ViberContacts = new List<string>();

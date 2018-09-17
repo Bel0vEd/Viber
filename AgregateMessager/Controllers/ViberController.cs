@@ -3,22 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Web.Http;
+using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace AgregateMessager.Controllers
 {
     public class ViberController : ApiController
     {
-       public void SendMessage(string text)
+     [System.Web.Http.HttpPost]
+         public void SendMessage([FromBody]Message MSG)
         {
-           
-        }
-        public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
-        {
-            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-            dtDateTime = dtDateTime.AddMilliseconds(1536582718861).ToLocalTime();
-            return dtDateTime;
-        }
 
+                Thread th = new Thread(()=>
+                {
+                WinApi.StartWork();
+                WinApi.ClickNumber();
+                WinApi.EnterNumber(MSG.to);
+                WinApi.SendMsg(MSG.text);
+                });
+            th.SetApartmentState(ApartmentState.STA);
+            th.Start();
+        }
+    
+    
+   
     }
 }
