@@ -23,12 +23,14 @@ namespace AgregateMessager
         private static SQLiteFactory factory = null;
         private static SQLiteConnection connection = null;
         public static List<String> Names()
+       
         //Создает лист Names из имён списка контактов
         {
             List<string> Names = new List<string>();
 
             try
             {
+               
                 factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
                 connection = (SQLiteConnection)factory.CreateConnection();
 

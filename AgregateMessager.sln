@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgregateMessager", "AgregateMessager\AgregateMessager.csproj", "{2813884A-74C4-4087-87CB-921C2EEF5BD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAgregateMessager", "ConsoleAgregateMessager\ConsoleAgregateMessager.csproj", "{8E7F90EC-7AE5-4A3F-920F-850413E967BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2813884A-74C4-4087-87CB-921C2EEF5BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2813884A-74C4-4087-87CB-921C2EEF5BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2813884A-74C4-4087-87CB-921C2EEF5BD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E7F90EC-7AE5-4A3F-920F-850413E967BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E7F90EC-7AE5-4A3F-920F-850413E967BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E7F90EC-7AE5-4A3F-920F-850413E967BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E7F90EC-7AE5-4A3F-920F-850413E967BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
