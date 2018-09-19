@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleAgregateMessager
+namespace ConsoleAgregateMessager.Models
 {
-    class Program
+    public class LoginRequest
     {
-        static void Main(string[] args)
-        {
-
-        }
+        public string e { get; set; }
     }
 }

@@ -43,9 +43,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\CheckMessageRequest.cs" />
+    <Compile Include="Models\CheckMessageResponse.cs" />
+    <Compile Include="Models\LoginRequest.cs" />
+    <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\SendMessageRequest.cs" />
+    <Compile Include="Models\SendMessageResponse.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Models\UserContext.cs" />
+    <Compile Include="Models\UserStatusRequest.cs" />
+    <Compile Include="Models\UserStatusResponse.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
