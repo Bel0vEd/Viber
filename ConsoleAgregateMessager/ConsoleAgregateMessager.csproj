@@ -59,6 +59,7 @@
     <Compile Include="Models\UserStatusResponse.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\General.cs" />
     <Compile Include="Utilities\LastOnline.cs" />
   </ItemGroup>
   <ItemGroup>

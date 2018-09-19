@@ -23,7 +23,7 @@ namespace ConsoleAgregateMessager.Models
         public Origins origins { get; set; }
     }
 
-    class LoginResponse
+    public class LoginResponse
     {
      
             public string e { get; set; }

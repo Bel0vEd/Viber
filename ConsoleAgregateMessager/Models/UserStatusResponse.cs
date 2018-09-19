@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleAgregateMessager.Models
 {
-    class UserStatusResponse
+    public class UserStatusResponse
     {
         public class Data
         {
