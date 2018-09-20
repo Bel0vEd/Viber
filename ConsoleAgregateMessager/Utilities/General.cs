@@ -11,6 +11,7 @@ namespace ConsoleAgregateMessager.Utilities
     {
         public static LoginResponse Login(LoginRequest login)
         {
+
             return null;
         }
         public static UserStatusResponse Status(UserStatusRequest.StatusUserRequest user)
