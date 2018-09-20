@@ -10,9 +10,8 @@ namespace ConsoleAgregateMessager.Utilities
     {
        private static void find()
         {
-       WinApi.FindWindowEx(null,null )    
+         
         }
 
         }
-}
 }

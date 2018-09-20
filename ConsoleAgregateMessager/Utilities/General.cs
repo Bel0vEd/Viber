@@ -44,7 +44,7 @@ namespace ConsoleAgregateMessager.Utilities
             sendMSG1.data = data1;
             return sendMSG1;
 
-            return null;
+            
         }
         public static CheckMessageResponse Check(CheckMessageRequest.CheckMsgRequest origin)
         {
