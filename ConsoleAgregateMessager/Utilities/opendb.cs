@@ -17,11 +17,12 @@ namespace ConsoleAgregateMessager
     public static class opendb
     {
         private static SQLiteDataAdapter sql = new SQLiteDataAdapter();
-        private static DataTable dt = new DataTable();
+        
         private static BindingSource bs = new BindingSource();
         private static string path_config = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.CommonTemplates)) + "Users\\" + Environment.UserName + "\\AppData\\Roaming\\ViberPC\\" + FindNumber.Number().First() + "\\viber.db";
         private static SQLiteFactory factory = null;
         private static SQLiteConnection connection = null;
+        
         public static List<String> Names()
        
         //Создает лист Names из имён списка контактов
@@ -30,8 +31,8 @@ namespace ConsoleAgregateMessager
 
             try
             {
-               
-                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                DataTable dt = new DataTable();
+        factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
                 connection = (SQLiteConnection)factory.CreateConnection();
 
                 connection.ConnectionString = "Data Source = " + path_config;
@@ -49,7 +50,7 @@ namespace ConsoleAgregateMessager
                 var Name = dt.Columns ["Name"];
                 foreach (DataRow dr in dt.Rows)
                 {
-                    if (!string.IsNullOrEmpty(dr[Name].ToString()))
+                   
                         Names.Add(dr[Name].ToString());
                 }
 
@@ -57,6 +58,7 @@ namespace ConsoleAgregateMessager
                 connection.Close();
             }
             catch { }
+            Names.RemoveAt(0);
             return Names;
         }
         public static List<String> Numbers()
@@ -66,6 +68,7 @@ namespace ConsoleAgregateMessager
 
             try
             {
+                DataTable dt = new DataTable();
                 factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
                 connection = (SQLiteConnection)factory.CreateConnection();
 
@@ -84,14 +87,15 @@ namespace ConsoleAgregateMessager
                 var Number = dt.Columns["Number"];
                 foreach (DataRow dr in dt.Rows)
                 {
-                    if (!string.IsNullOrEmpty(dr[Number].ToString()))
+                
                         Numbers.Add(dr[Number].ToString());
                 }
 
-
+                
                 connection.Close();
             }
             catch { }
+            Numbers.RemoveAt(0);
             return Numbers;
         }
 
@@ -101,6 +105,7 @@ namespace ConsoleAgregateMessager
             List<string> ViberContacts = new List<string>();
             try
             {
+                DataTable dt = new DataTable();
                 factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
                 connection = (SQLiteConnection)factory.CreateConnection();
 
@@ -118,14 +123,14 @@ namespace ConsoleAgregateMessager
                 bs.DataSource = dt;
                 var ViberContact = dt.Columns["ViberContact"];
                 foreach (DataRow dr in dt.Rows)
-                {
-                    if (!string.IsNullOrEmpty(dr[ViberContact].ToString()))
+                { 
                         ViberContacts.Add(dr[ViberContact].ToString());
                 }
 
                 connection.Close();
             }
             catch { }
+            ViberContacts.RemoveAt(0);
             return ViberContacts;
 
 
@@ -141,6 +146,7 @@ namespace ConsoleAgregateMessager
             List<string> MessageStatuses = new List<string>();
             try
             {
+                DataTable dt = new DataTable();
                 factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
                 connection = (SQLiteConnection)factory.CreateConnection();
 
@@ -176,6 +182,7 @@ namespace ConsoleAgregateMessager
             List<string> TimeStamps = new List<string>();
             try
             {
+                DataTable dt = new DataTable();
                 factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
                 connection = (SQLiteConnection)factory.CreateConnection();
 

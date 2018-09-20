@@ -9,6 +9,7 @@ namespace ConsoleAgregateMessager
     class Program
     {
         static void Main(string[] args)
+        
         {
             var names = opendb.Names();
             var numbers = opendb.Numbers();

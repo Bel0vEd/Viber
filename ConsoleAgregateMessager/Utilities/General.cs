@@ -46,7 +46,19 @@ namespace ConsoleAgregateMessager.Utilities
         }
         public static SendMsgResponse Send(SendMsgRequest text) //ВМ
         {
-            return null;
+            SendMessageResponse.SendMsgResponse sendMSG1 = new SendMessageResponse.SendMsgResponse();
+            SendMessageResponse.Data data1 = new SendMessageResponse.Data();
+            data1.channel = "Viber";
+            data1.origin= "0"; //TODO:приделать поиск всех открытых окон вайбера;
+            data1.type = "text";
+            data1.to = "0"; //TODO:приделать i номер из БД;
+            data1.text = "0"; //TODO:набираемый текст;
+            sendMSG1.e = "0";
+            sendMSG1.status = "0";
+            sendMSG1.data = data1;
+            return sendMSG1;
+
+            
         }
         public static CheckMsgResponse Check(CheckMsgRequest origin)
         {

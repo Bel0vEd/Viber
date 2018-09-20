@@ -45,6 +45,7 @@
     </Reference>
     <Reference Include="Patagames.Ocr, Version=1.11.3.452, Culture=neutral, PublicKeyToken=be14d8e1fe46e570, processorArchitecture=MSIL">
       <HintPath>..\packages\Tesseract.Net.SDK.1.15.342\lib\net452\Patagames.Ocr.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -85,6 +86,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\FindNumber.cs" />
+    <Compile Include="Utilities\FindWindow.cs" />
     <Compile Include="Utilities\General.cs" />
     <Compile Include="Utilities\LastOnline.cs" />
     <Compile Include="Utilities\opendb.cs" />
