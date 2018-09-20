@@ -46,8 +46,8 @@ namespace ConsoleAgregateMessager.Utilities
         }
         public static SendMsgResponse Send(SendMsgRequest text) //ВМ
         {
-            SendMessageResponse.SendMsgResponse sendMSG1 = new SendMessageResponse.SendMsgResponse();
-            SendMessageResponse.Data data1 = new SendMessageResponse.Data();
+            SendMsgResponse sendMSG1 = new SendMsgResponse();
+            Data4 data1 = new Data4();
             data1.channel = "Viber";
             data1.origin= "0"; //TODO:приделать поиск всех открытых окон вайбера;
             data1.type = "text";
