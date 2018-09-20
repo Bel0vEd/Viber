@@ -10,10 +10,7 @@ namespace ConsoleAgregateMessager
     {
         static void Main(string[] args)
         {
-            /*LastOnline.GetLastSeen().ContinueWith(d =>
-            {
-                string text = d.Result;
-            }); для вызова*/
+            
         }
     }
 }
