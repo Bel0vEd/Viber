@@ -50,7 +50,7 @@ namespace ConsoleAgregateMessager
                 var Name = dt.Columns["Name"];
                 foreach (DataRow dr in dt.Rows)
                 {
-                    if (!string.IsNullOrEmpty(dr[Name].ToString()))
+                   
                         Names.Add(dr[Name].ToString());
                 }
 
@@ -58,7 +58,7 @@ namespace ConsoleAgregateMessager
                 connection.Close();
             }
             catch { }
-            
+            Names.RemoveAt(0);
             return Names;
         }
         public static List<String> Numbers()
@@ -87,7 +87,7 @@ namespace ConsoleAgregateMessager
                 var Number = dt.Columns["Number"];
                 foreach (DataRow dr in dt.Rows)
                 {
-                    if (!string.IsNullOrEmpty(dr[Number].ToString()))
+                
                         Numbers.Add(dr[Number].ToString());
                 }
 
@@ -123,8 +123,7 @@ namespace ConsoleAgregateMessager
                 bs.DataSource = dt;
                 var ViberContact = dt.Columns["ViberContact"];
                 foreach (DataRow dr in dt.Rows)
-                {
-                    if (!string.IsNullOrEmpty(dr[ViberContact].ToString()))
+                { 
                         ViberContacts.Add(dr[ViberContact].ToString());
                 }
 
