@@ -25,10 +25,8 @@ namespace ConsoleAgregateMessager.Models
 
     public class LoginResponse
     {
-     
-            public string e { get; set; }
-            public string status { get; set; }
-            public Data data { get; set; }
-        
+        public string e { get; set; }
+        public string status { get; set; }
+        public Data data { get; set; }
     }
 }

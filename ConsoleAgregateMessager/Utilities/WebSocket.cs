@@ -6,7 +6,7 @@ using System.Net.WebSockets;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace AgregateMessager.Utilities
+namespace ConsoleAgregateMessager.Utilities
 {
     public  class WebSocket
     {

@@ -24,21 +24,48 @@ namespace ConsoleAgregateMessager.Utilities
             login1.status = "0";
             login1.data = data1;
             return login1;
-
         }
-        public static UserStatusResponse Status(UserStatusRequest.StatusUserRequest user)
+        public static async Task<StatusUserResponse> Status(StatusUserRequest user)
+        {
+            string text = await LastOnline.GetLastSeen();
+            StatusUserResponse status1 = new StatusUserResponse
+            {
+                e = "",
+                status = "",
+                data = new Data2
+                {
+                    channel = "viber",
+                    lastseen = text,
+                    messagestatus = "",
+                    name = "",
+                    origin = "",
+                    to = "",
+                }
+            };
+            return status1;
+        }
+        public static SendMsgResponse Send(SendMsgRequest text) //ВМ
         {
             return null;
         }
-        public static SendMessageResponse Send(SendMessageRequest.SendMsgRequest text) //ВМ
+        public static CheckMsgResponse Check(CheckMsgRequest origin)
         {
-
-
-            return null;
-        }
-        public static CheckMessageResponse Check(CheckMessageRequest.CheckMsgRequest origin)
-        {
-            return null;
+            CheckMsgResponse check1 = new CheckMsgResponse
+            {
+                e = "",
+                status = "",
+                data = new Data6
+                {
+                    origin = "",
+                    channel = "",
+                    messages = new NumberOfMSG
+                    {
+                        length = 0,
+                        AllMessages = new List<messages>()
+                    }
+                }
+            };
+            return check1;
         }
     }
 }

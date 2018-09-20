@@ -10,10 +10,11 @@ namespace ConsoleAgregateMessager
     {
         static void Main(string[] args)
         {
-            /*LastOnline.GetLastSeen().ContinueWith(d =>
-            {
-                string text = d.Result;
-            }); для вызова*/
+            var names = opendb.Names();
+            var numbers = opendb.Numbers();
+            var vibercontacts = opendb.ViberContacts();
+            var messagestatus = opendb.MessageStatuses();
+            var time = opendb.TimeStamps();
         }
     }
 }

@@ -12,7 +12,7 @@ using System.Windows;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace AgregateMessager
+namespace ConsoleAgregateMessager
 { 
    static class WinApi
     {

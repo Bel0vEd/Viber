@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AgregateMessager
+namespace ConsoleAgregateMessager
 {
     public static class opendb
     {
@@ -46,7 +46,7 @@ namespace AgregateMessager
                 sql.Fill(dt);
 
                 bs.DataSource = dt;
-                var Name = dt.Columns["Name"];
+                var Name = dt.Columns ["Name"];
                 foreach (DataRow dr in dt.Rows)
                 {
                     if (!string.IsNullOrEmpty(dr[Name].ToString()))

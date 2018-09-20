@@ -8,7 +8,6 @@ namespace AgregateMessager
 {
     public enum StatusValue { none, erroe, ok }
     public enum MessageStatus { delivered, seen, none }
-
     public class User
     {
      public StatusValue Status { get; set; }
@@ -17,5 +16,4 @@ namespace AgregateMessager
         public MessageStatus MessageStatus { get; set; }
 
     }
-   
 }

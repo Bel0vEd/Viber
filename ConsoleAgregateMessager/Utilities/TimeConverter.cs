@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AgregateMessager
+namespace ConsoleAgregateMessager
 {
     public static class TimeConverter
         //Конвертит UnixTime в обычное время 
