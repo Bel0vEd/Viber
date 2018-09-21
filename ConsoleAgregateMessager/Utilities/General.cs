@@ -28,18 +28,27 @@ namespace ConsoleAgregateMessager.Utilities
         public static async Task<StatusUserResponse> Status(StatusUserRequest user)
         {
             string text = await LastOnline.GetLastSeen();
+            var numbers = opendb.Numbers();
+            var nomer = user.data.to;
+            while()
+            {
+                if (nomer == numbers)
+            }
+            var vibercontacts = opendb.ViberContacts();
+            var names = opendb.Names();
+            var messagestatus = opendb.MessageStatuses();
             StatusUserResponse status1 = new StatusUserResponse
             {
-                e = "",
-                status = "",
+                e = user.e,
+                status = vibercontacts[1],
                 data = new Data2
                 {
                     channel = "viber",
                     lastseen = text,
                     messagestatus = "",
-                    name = "",
-                    origin = "",
-                    to = "",
+                    name = names[1],
+                    origin = user.data.origin,
+                    to = user.data.to,
                 }
             };
             return status1;
