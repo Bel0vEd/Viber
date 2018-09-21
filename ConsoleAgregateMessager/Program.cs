@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleAgregateMessager.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,15 +12,13 @@ namespace ConsoleAgregateMessager
         static void Main(string[] args)
         
         {
-            var names = opendb.Names();
-            var numbers = opendb.Numbers();
-            var vibercontacts = opendb.ViberContacts();
-            var messagestatus = opendb.MessageStatuses();
-            var time = opendb.TimeStamps();
-            var chatid = opendb.ChatId();
-            var contactid = opendb.ContactId();
-            var contactid1 = opendb.ContactId1();
-            var chatidmsg = opendb.ChatIdMsg();
+            var a = General.Status(new Models.StatusUserRequest
+            {
+                data = new Models.Data1
+                {
+                    to = "+79511929402"
+                }
+            });
         }
     }
 }

@@ -94,7 +94,9 @@ namespace ConsoleAgregateMessager
                 
                 connection.Close();
             }
-            catch { }
+            catch(Exception e) {
+
+            }
             Numbers.RemoveAt(0);
             return Numbers;
         }

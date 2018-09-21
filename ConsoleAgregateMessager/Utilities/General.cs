@@ -28,25 +28,36 @@ namespace ConsoleAgregateMessager.Utilities
         public static async Task<StatusUserResponse> Status(StatusUserRequest user)
         {
             string text = await LastOnline.GetLastSeen();
+            var chatidmsg = opendb.ChatIdMsg();
+            var chatid = opendb.ChatId();
+            var contactid = opendb.ContactId();
             var numbers = opendb.Numbers();
-            var nomer = user.data.to;
-            while()
-            {
-                if (nomer == numbers)
-            }
             var vibercontacts = opendb.ViberContacts();
             var names = opendb.Names();
             var messagestatus = opendb.MessageStatuses();
+            var nomer = user.data.to;
+            var a = numbers.FirstOrDefault(d => d == nomer);
+            if (a == null) return null;//Error
+            var index = numbers.IndexOf(a);
+            string index1 = index.ToString();
+            a = contactid.FirstOrDefault(d => d == index1);
+            if (a == null) return null;
+            int index2 = contactid.IndexOf(a);
+            string chatid1 = chatid[index2];
+            var t = messagestatus.Select(d => new Tuple<string, string>(d, chatidmsg[messagestatus.IndexOf(d)])).ToList();
+            var msgstatusTuple = t.LastOrDefault(d => d.Item1 != "0" && d.Item2 == chatid1);
+            if (msgstatusTuple == null) return null;
+            var msgstatus = msgstatusTuple.Item1;//status
             StatusUserResponse status1 = new StatusUserResponse
             {
                 e = user.e,
-                status = vibercontacts[1],
+                status = vibercontacts[index],
                 data = new Data2
                 {
                     channel = "viber",
                     lastseen = text,
-                    messagestatus = "",
-                    name = names[1],
+                    messagestatus = msgstatus,
+                    name = names[index],
                     origin = user.data.origin,
                     to = user.data.to,
                 }
