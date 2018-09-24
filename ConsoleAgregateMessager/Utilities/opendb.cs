@@ -94,7 +94,9 @@ namespace ConsoleAgregateMessager
                 
                 connection.Close();
             }
-            catch { }
+            catch(Exception e) {
+
+            }
             Numbers.RemoveAt(0);
             return Numbers;
         }
@@ -168,8 +170,6 @@ namespace ConsoleAgregateMessager
                     if (!string.IsNullOrEmpty(dr[MessageStatus].ToString()))
                         MessageStatuses.Add(dr[MessageStatus].ToString());
                 }
-
-
                 connection.Close();
             }
             catch { }
@@ -203,19 +203,114 @@ namespace ConsoleAgregateMessager
                 {
                     TimeStamps.Add(TimeConverter.ConvertTime(dr[TimeStamp].ToString()));
                 }
-
-
                 connection.Close();
             }
             catch { }
             return TimeStamps;
         }
-
-        public static List<String> TextMessages()
-        //Создает лист TextMessages, содержащий текст сообщений
-        
+        public static List<String> ChatId()
+        //Создает лист ViberContacts , в котором указано, использует ли контакт Viber; 1-использует, 0 - не использует
         {
-            List<string> TextMessages = new List<string>();
+            List<string> ChatId = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM ChatRelation";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var chatid = dt.Columns["ChatID"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    ChatId.Add(dr[chatid].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            return ChatId;
+        }
+        public static List<String> ContactId()
+        //Создает лист ViberContacts , в котором указано, использует ли контакт Viber; 1-использует, 0 - не использует
+        {
+            List<string> ContactId = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM ChatRelation";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var contactid = dt.Columns["ContactID"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    ContactId.Add(dr[contactid].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            return ContactId;
+        }
+        public static List<String> ContactId1()
+        //Создает лист ViberContacts , в котором указано, использует ли контакт Viber; 1-использует, 0 - не использует
+        {
+            List<string> ContactId1 = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM Contact";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var contactid = dt.Columns["ContactID"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    ContactId1.Add(dr[contactid].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            return ContactId1;
+        }
+        public static List<String> ChatIdMsg()
+        //Создает лист ViberContacts , в котором указано, использует ли контакт Viber; 1-использует, 0 - не использует
+        {
+            List<string> ChatIdMsg = new List<string>();
             try
             {
                 DataTable dt = new DataTable();
@@ -234,19 +329,16 @@ namespace ConsoleAgregateMessager
                 sql.Fill(dt);
 
                 bs.DataSource = dt;
-                var Body = dt.Columns["Body"];
+                var chatid = dt.Columns["ChatID"];
                 foreach (DataRow dr in dt.Rows)
                 {
-                    if (!string.IsNullOrEmpty(dr[Body].ToString()))
-                        TextMessages.Add(dr[Body].ToString());
+                    ChatIdMsg.Add(dr[chatid].ToString());
                 }
-
 
                 connection.Close();
             }
             catch { }
-            return TextMessages;
+            return ChatIdMsg;
         }
-
     }
 }
