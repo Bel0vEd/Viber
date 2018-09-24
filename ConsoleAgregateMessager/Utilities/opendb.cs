@@ -211,6 +211,42 @@ namespace ConsoleAgregateMessager
             return TimeStamps;
         }
 
+        public static List<String> TextMessages()
+        //Создает лист TextMessages, содержащий текст сообщений
+        
+        {
+            List<string> TextMessages = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var Body = dt.Columns["Body"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (!string.IsNullOrEmpty(dr[Body].ToString()))
+                        TextMessages.Add(dr[Body].ToString());
+                }
+
+
+                connection.Close();
+            }
+            catch { }
+            return TextMessages;
+        }
 
     }
 }

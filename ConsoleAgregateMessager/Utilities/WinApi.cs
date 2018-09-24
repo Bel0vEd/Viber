@@ -47,6 +47,15 @@ namespace ConsoleAgregateMessager
         [DllImport("user32.dll")]
         static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
 
+        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+
+        public static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
+        // Delegate to filter which windows to include 
+
+       
+
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, UInt32 nCmdShow);
 

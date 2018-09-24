@@ -17,7 +17,7 @@ namespace ConsoleAgregateMessager
     public static class FindNumber
     {
         private static SQLiteDataAdapter sql = new SQLiteDataAdapter();
-        private static DataTable dt = new DataTable();
+        
         private static BindingSource bs = new BindingSource();
         private static string path_config = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.CommonTemplates)) + "Users\\" + Environment.UserName + "\\AppData\\Roaming\\ViberPC\\config.db";
         private static SQLiteFactory factory = null;
@@ -27,6 +27,7 @@ namespace ConsoleAgregateMessager
             List<string> IDs = new List<string>();
             try
             {
+                DataTable dt = new DataTable();
                 factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
                 connection = (SQLiteConnection)factory.CreateConnection();
 
