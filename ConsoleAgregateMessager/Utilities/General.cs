@@ -102,18 +102,60 @@ namespace ConsoleAgregateMessager.Utilities
         //ВМ
         public static CheckMsgResponse Check(CheckMsgRequest origin)
         {
+            string message;
+            string name;
+            string typemsg;
+            int lastmsg = 0;
+            var chatidmsg = opendb.ChatIdMsg();
+            var contactidmsg = opendb.ContactIdMsg();
+            List<int> newchat = new List<int>();
+            List<int> contactidmsgint = contactidmsg.ConvertAll(x => int.Parse(x));
+            var chatid = opendb.ChatId();
+            var body = opendb.Body();
+            var type = opendb.Type();
+            var contactid = opendb.ContactId();
+            var numbers = opendb.Numbers();
+            var vibercontacts = opendb.ViberContacts();
+            var names = opendb.Names();
+            var messagestatus = opendb.MessageStatuses();
+            int lastmsgnow = messagestatus.Count;
+            if (lastmsgnow > lastmsg)
+            {
+                for (int i = lastmsg; i < lastmsgnow; i++)
+                {
+                    if (newchat.Contains(contactidmsgint[i]) == false && messagestatus[i] == "0")
+                    {
+                        typemsg = type[i];
+                        name = names[contactidmsgint[i] - 2];
+                        message = body[i];
+                        newchat.Add(contactidmsgint[i]);
+                    }
+                }
+            }
             CheckMsgResponse check1 = new CheckMsgResponse
             {
-                e = "",
+                e = "messages",
                 status = "",
                 data = new Data6
                 {
-                    origin = "",
-                    channel = "",
+                    origin = origin.data.origin,
+                    channel = origin.data.channel,
                     messages = new NumberOfMSG
                     {
                         length = 0,
                         AllMessages = new List<messages>()
+                        {/*
+                            sender = new sender
+                            {
+                                name = "",
+                                msisdn = ""
+                            },
+                            message = new message
+                            {
+                                type = "",
+                                text = ""
+                            }*/
+                        }
                     }
                 }
             };
