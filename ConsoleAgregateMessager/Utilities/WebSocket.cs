@@ -11,7 +11,6 @@ namespace ConsoleAgregateMessager.Utilities
     public  class WebSocket
     {
         CancellationTokenSource source = new CancellationTokenSource();
-        
         Uri siteUri = new Uri("https://websocket.org/echo.html");
         ClientWebSocket client = new ClientWebSocket();
         public void OpenSocket()
@@ -20,10 +19,6 @@ namespace ConsoleAgregateMessager.Utilities
             CancellationToken token = source.Token;
             client.ConnectAsync(siteUri, token);
             var b = client.ReceiveAsync(buffer, token);
-           
-
-
         }
-     
     }
 }

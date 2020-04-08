@@ -3,163 +3,308 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 
-namespace ConsoleAgregateMessager.Utilities
+namespace ConsoleAgregateMessager
 {
     public static class General
     {
-        public static LoginResponse Login(LoginRequest login) //ВМ
+        public static string Status(string zapros)
         {
-            LoginResponse login1 = new LoginResponse();
-            Data data1 = new Data();
-            Origins origins1 = new Origins();
-            __invalid_type__1 invalid_type_1_1 = new __invalid_type__1();
-            var AllOrigins = FindWindow.FindWindowsWithText("Viber").ToList();
-            for (int i = 0; i < AllOrigins.Count; i++)
+            string last = "";
+            string status = "";
+            string msgstatus = "";
+            string chat = "";
+            int contact = 0;
+            string nomer = Regex.Match(zapros, "(?<=to\":\").*(?=\")").Value;
+            try
             {
-                invalid_type_1_1.origin = FindWindow.GetWindowText(AllOrigins[i]);
+                WinApi.StartWork();
+                WinApi.ClickNumber();
+                WinApi.EnterNumber(nomer);
+                WinApi.ClickMessage();
+                last = LastOnline.GetLastSeen();
             }
-            invalid_type_1_1.channel = "Viber";
-            origins1.__invalid_name__1 = invalid_type_1_1;
-            origins1.length = AllOrigins.Count;
-            data1.origins = origins1;
-            login1.e = "login";
-            if (AllOrigins.ToString().Contains(login.e))
-              {
-                login1.status = "Ok";
-              }
-            else
-              {
-                login1.status = "Error";
-              }
-            
-            login1.data = data1;
-            return login1;
-        }
-        //ВМ
-        public static async Task<StatusUserResponse> Status(StatusUserRequest user)
-        {
-            string text = await LastOnline.GetLastSeen();
-            var chatidmsg = opendb.ChatIdMsg();
-            var chatid = opendb.ChatId();
-            var contactid = opendb.ContactId();
+            catch (Exception)
+            {
+                status = "error";
+            }
+            if (!last.Contains("last"))
+            {
+                last = "";
+            }
+            if (last.Contains("a long time ago"))
+            {
+                status = "error";
+            }
+            var avatars = opendb.Avatars();
             var numbers = opendb.Numbers();
+            var clientname = opendb.ClientName();
             var vibercontacts = opendb.ViberContacts();
             var names = opendb.Names();
+            var contactid = opendb.ContactId();
+            var chatid = opendb.ChatId();
+            var chatidmsg = opendb.ChatIdMsg();
             var messagestatus = opendb.MessageStatuses();
-            var nomer = user.data.to;
-            var a = numbers.FirstOrDefault(d => d == nomer);
-            if (a == null) return null;//Error
-            var index = numbers.IndexOf(a);
-            string index1 = index.ToString();
-            a = contactid.FirstOrDefault(d => d == index1);
-            if (a == null) return null;
-            int index2 = contactid.IndexOf(a);
-            string chatid1 = chatid[index2];
-            var t = messagestatus.Select(d => new Tuple<string, string>(d, chatidmsg[messagestatus.IndexOf(d)])).ToList();
-            var msgstatusTuple = t.LastOrDefault(d => d.Item1 != "0" && d.Item2 == chatid1);
-            if (msgstatusTuple == null) return null;
-            var msgstatus = msgstatusTuple.Item1;//status
-            StatusUserResponse status1 = new StatusUserResponse
+            for (int i = 0; i < numbers.Count; i++)
             {
-                e = user.e,
-                status = vibercontacts[index],
-                data = new Data2
+                if (numbers[i].Contains(nomer))
+                    contact = i;
+            }
+            if (vibercontacts[contact] == "0")
+                status = "none";
+            else
+                status = "ok";
+            string avatar = avatars[contact];
+            string name = names[contact];
+            if (name == "")
+                name = clientname[contact];
+            contact = contact + 2;
+            for (int i = 0; i < contactid.Count; i++)
+            {
+                if (contactid[i].Contains(contact.ToString()))
                 {
-                    channel = "viber",
-                    lastseen = text,
-                    messagestatus = msgstatus,
-                    name = names[index],
-                    origin = user.data.origin,
-                    to = user.data.to,
+                    contact = i;
+                    break;
                 }
-            };
+            }
+            try
+            {
+                chat = chatid[contact];
+                for (int i = chatidmsg.Count - 1; i > 0; i--)
+                {
+                    if (chatidmsg[i].Contains(chat) && messagestatus[i] != "0")
+                    {
+                        msgstatus = messagestatus[i];
+                        break;
+                    }
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                msgstatus = "nomessage";
+            }
+            try
+            {
+                if (msgstatus == "130" || msgstatus == "133")
+                    msgstatus = "read";
+                else if (msgstatus == "129")
+                    msgstatus = "delivered";
+                else if (msgstatus == "")
+                    msgstatus = "nomessage";
+                else if (Convert.ToInt32(msgstatus) > 0)
+                    msgstatus = "notdelivered";
+            }
+            catch (FormatException)
+            {
+            }
+            /*DateTime last1 = new DateTime();
+            if (last.Contains("last seen today at"))
+            {
+                last = Regex.Match(last, "(?<=at ).*").Value;
+                last1 = DateTime.Parse(last);
+                status = "ok";
+            }
+            if (last.Contains("last seen yesterday at"))
+            {
+                last = Regex.Match(last, "(?<=at ).*").Value;
+                last1 = DateTime.Parse(last).AddDays(-1);
+                status = "ok";
+            }
+            if (last.Contains("min ago"))
+            {
+                last = Regex.Match(last, "(?<=seen ).*(?= min )").Value;
+                double last2 = double.Parse(last);
+                last1 = DateTime.Now.AddMinutes(-last2);
+                status = "ok";
+            }
+            if (last.Contains("last seen on"))
+            {
+                last = Regex.Match(last, "(?<=on ).*").Value;
+                last1 = DateTime.Parse(last);
+                status = "ok";
+            }
+            if (last.Contains("a long time ago"))
+            {
+                status = "error";
+            }
+            if (last.Contains("moment ago"))
+            {
+                last1 = DateTime.Now.AddMinutes(-1);
+                status = "ok";
+            }*/
+            string status1 = "{\"e\":\"status\",\"status\":\"" + status + "\",\"data\":{\"origin\":\"msisdn\",\"to\":\"+7" + nomer + "\",\"channel\":\"viber\",\"name\":\"" + name + "\",\"lastseen\":\"" + last + "\",\"messagestatus\":\"" + msgstatus + "\",\"avatar\":\"" + avatar + "\"}}";
             return status1;
         }
-        public static SendMsgResponse Send(SendMsgRequest text) //ВМ
+        public static string Send(string zapros)
         {
-            SendMsgResponse sendMSG1 = new SendMsgResponse();
-            Data4 data1 = new Data4();
-            data1.channel = "Viber";
-            var AllOrigins = FindWindow.FindWindowsWithText("Viber").ToList();
-            for (int i = 0; i < AllOrigins.Count; i++)
+            string status = "";
+            int contact = 0;
+            string type = "";
+            string text = Regex.Match(zapros, "(?<=text\":\").*?(?=\")").Value;
+            string nomer = Regex.Match(zapros, "(?<=to\":\").*?(?=\")").Value;
+            string path = Regex.Match(zapros, "(?<=file\":\").*?(?=\")").Value;
+            var numbers = opendb.Numbers();
+            var vibercontacts = opendb.ViberContacts();
+            for (int i = 0; i < numbers.Count; i++)
             {
-                data1.origin = FindWindow.GetWindowText(AllOrigins[i]);
-            }  
-            data1.type = "text";
-         
-            data1.to = //opendb.Numbers()[i] какой-то номер;
-            
-            data1.text = "0"; //TODO:набираемый текст;
-            sendMSG1.e ="send";
-            sendMSG1.status = "0";///
-            sendMSG1.data = data1;
-            return sendMSG1;
-
-            
+                if (numbers[i].Contains(nomer))
+                    contact = i;
+            }
+            try
+            {
+                if (vibercontacts[contact] == "1")
+                {
+                    WinApi.StartWork();
+                    WinApi.ClickNumber();
+                    WinApi.EnterNumber(nomer);
+                    WinApi.ClickMessage();
+                    if (path != "")
+                    {
+                        type = "file";
+                        WinApi.SendMsg(text, path, true);
+                    }
+                    else
+                    {
+                        type = "text";
+                        WinApi.SendMsg(text, path, false);
+                    }
+                    status = "ok";
+                }
+                else
+                    status = "error";
+            }
+            catch (Exception)
+            {
+                status = "error";
+            }
+            string send = "{\"e\":\"send\",\"status\":\"" + status + "\",\"data\":{\"channel\":\"viber\",\"origin\":\"msisdn\",\"to\":\"+7" + nomer + "\",\"type\":\"" + type + "\",\"text\":\"" + text + "\",\"file\":\"" + path + "\"}}";
+            return send;
         }
-        //ВМ
-        public static CheckMsgResponse Check(CheckMsgRequest origin)
+        public static string Check(long timelast)
         {
-            string message;
-            string name;
-            string typemsg;
-            int lastmsg = 0;
+            string type = "";
+            int z = 0;
+            string check = "";
             var chatidmsg = opendb.ChatIdMsg();
+            var typemsg = opendb.Type();
+            var images = opendb.Image();
+            var info = opendb.Info();
+            var timestamps = opendb.TimeStamps();
+            var isread = opendb.IsRead();
             var contactidmsg = opendb.ContactIdMsg();
-            List<int> newchat = new List<int>();
-            List<int> contactidmsgint = contactidmsg.ConvertAll(x => int.Parse(x));
-            var chatid = opendb.ChatId();
             var body = opendb.Body();
-            var type = opendb.Type();
             var contactid = opendb.ContactId();
             var numbers = opendb.Numbers();
             var vibercontacts = opendb.ViberContacts();
             var names = opendb.Names();
             var messagestatus = opendb.MessageStatuses();
-            int lastmsgnow = messagestatus.Count;
-            if (lastmsgnow > lastmsg)
+            int count = contactidmsg.Count;
+            string[] newchat = new string[chatidmsg.Count];
+            for (int i = 0; i < isread.Count; i++)
             {
-                for (int i = lastmsg; i < lastmsgnow; i++)
+                if (isread[i] == "0" && messagestatus[i] == "0" && timelast < Convert.ToInt64(timestamps[i]))
                 {
-                    if (newchat.Contains(contactidmsgint[i]) == false && messagestatus[i] == "0")
-                    {
-                        typemsg = type[i];
-                        name = names[contactidmsgint[i] - 2];
-                        message = body[i];
-                        newchat.Add(contactidmsgint[i]);
-                    }
+                    timelast = Convert.ToInt64(timestamps[timestamps.Count - 1]);
+                    count = i;
+                    break;
                 }
             }
-            CheckMsgResponse check1 = new CheckMsgResponse
+            for (int i = count; i < contactidmsg.Count; i++)
             {
-                e = "messages",
-                status = "",
-                data = new Data6
+                if (!newchat.Contains(contactidmsg[i]) && contactidmsg[i] != "1" && isread[i] == "0")
                 {
-                    origin = origin.data.origin,
-                    channel = origin.data.channel,
-                    messages = new NumberOfMSG
+                    newchat[z] = contactidmsg[i];
+                    z++;
+                }
+            }
+            string[] newchat1 = new string[z];
+            string[] name = new string[z];
+            string[] nomer = new string[z];
+            string[] messages = new string[z];
+            for (int i = 0; i < z; i++)
+            {
+                name[i] = names[Convert.ToInt32(newchat[i]) - 2];
+                nomer[i] = numbers[Convert.ToInt32(newchat[i]) - 2];
+                newchat1[i] = newchat[i];
+            }
+            string letter = "";
+            string letter1 = "";
+            for (int i = 0; i < z; i++)
+            {
+                int nomermsg = 0;
+                string letter2 = "";
+                string[] tipi = new string[body.Count];
+                for (int ii = count; ii < body.Count; ii++)
+                {
+                    if (isread[ii] == "0" && messagestatus[ii] == "0" && contactidmsg[ii] == newchat1[i])
                     {
-                        length = 0,
-                        AllMessages = new List<messages>()
-                        {/*
-                            sender = new sender
-                            {
-                                name = "",
-                                msisdn = ""
-                            },
-                            message = new message
-                            {
-                                type = "",
-                                text = ""
-                            }*/
+                        if (typemsg[ii] == "1")
+                        {
+                            type = "text";
+                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            nomermsg++;
+                        }
+                        if (typemsg[ii] == "6")
+                        {
+                            type = "voice";
+                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            nomermsg++;
+                        }
+                        if (typemsg[ii] == "11")
+                        {
+                            type = "file";
+                            info[ii] = Regex.Match(info[ii], "(?<=FileName\": \").*?(?=\",)").Value;
+                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + info[ii] + "\"},";
+                            nomermsg++;
+                        }
+                        if (typemsg[ii] == "3")
+                        {
+                            type = "video";
+                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            nomermsg++;
+                        }
+                        if (typemsg[ii] == "2")
+                        {
+                            type = "image";
+                            images[ii] = Regex.Match(images[ii], "(?<=ViberDownloads/).*").Value;
+                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\",\"file\":\"" + images[ii] + "\"},";
+                            nomermsg++;
+                        }
+                        if (body[ii].Contains("https://maps.yandex.ru"))
+                        {
+                            type = "location";
+                            body[ii] = Regex.Match(body[ii], "(?<=ActionBody\":\").*?(?=\")").Value;
+                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            nomermsg++;
                         }
                     }
+                    letter1 = "\"" + i + "\":{\"sender\":{\"name\":\"" + name[i] + "\",\"msisdn\":\"" + nomer[i] + "\"}," + letter2 + "}";
                 }
-            };
-            return check1;
+                if(letter1!="")
+                    letter1 = letter1.Substring(0, letter1.Length - 2) + "}";
+                letter = letter.Insert(letter.Length, letter1 + ",");
+            }
+            if (letter != "")
+                letter = letter.Substring(0, letter.Length - 1);
+            check = timelast + "{\"e\":\"messages\",\"status\":\"ok\",\"data\":{\"origin\":\"" + FindNumber.Useak() + "\",\"channel\":\"viber\",\"messages\":{\"length\": " + z + "," + letter + "}}}".Replace("\\", ""); ;
+            return check;
+        }
+        public static bool ViberWork()
+        {
+            bool runviber = false;
+            Process[] procList = Process.GetProcesses();
+            for (int i = 0; i < procList.Length; i++)
+            {
+                if ("Viber" == procList[i].ProcessName)
+                {
+                    runviber = true;
+                }
+            }
+            return runviber;
         }
     }
 }

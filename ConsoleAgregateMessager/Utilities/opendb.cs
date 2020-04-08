@@ -19,12 +19,10 @@ namespace ConsoleAgregateMessager
         private static SQLiteDataAdapter sql = new SQLiteDataAdapter();
         
         private static BindingSource bs = new BindingSource();
-        private static string path_config = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.CommonTemplates)) + "Users\\" + Environment.UserName + "\\AppData\\Roaming\\ViberPC\\" + FindNumber.Number().First() + "\\viber.db";
+        private static string path_config = Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.CommonTemplates)) + "Users\\" + Environment.UserName + "\\AppData\\Roaming\\ViberPC\\" + FindNumber.Useak() + "\\viber.db";
         private static SQLiteFactory factory = null;
         private static SQLiteConnection connection = null;
-        
         public static List<String> Names()
-       
         //Создает лист Names из имён списка контактов
         {
             List<string> Names = new List<string>();
@@ -100,7 +98,6 @@ namespace ConsoleAgregateMessager
             Numbers.RemoveAt(0);
             return Numbers;
         }
-
         public static List<String> ViberContacts()
         //Создает лист ViberContacts , в котором указано, использует ли контакт Viber; 1-использует, 0 - не использует
         {
@@ -175,7 +172,7 @@ namespace ConsoleAgregateMessager
             catch { }
             return MessageStatuses;
         }
-            public static List<String> TimeStamps()
+        public static List<String> TimeStamps()
         //Создает лист TimeStamps, содержащий время отправки и получения сообщений в unix времени
         // Встроен конвертер unixtime в обычное время
         {
@@ -209,7 +206,7 @@ namespace ConsoleAgregateMessager
             return TimeStamps;
         }
         public static List<String> ChatId()
-            //создает лист с колонкой ChatId(номер чата) из ChatRelation
+        //создает лист с колонкой ChatId(номер чата) из ChatRelation
         {
             List<string> ChatId = new List<string>();
             try
@@ -308,7 +305,7 @@ namespace ConsoleAgregateMessager
             return ChatIdMsg;
         }
         public static List<String> ContactIdMsg()
-        //создает лист с колонкой ChatId(номер чата с каким либо пользователем) из MessageInfo
+        //создает лист с колонкой ContactId(номер пользователя) из MessageInfo
         {
             List<string> ContactIdMsg = new List<string>();
             try
@@ -405,6 +402,173 @@ namespace ConsoleAgregateMessager
             }
             catch { }
             return Type;
+        }
+        public static List<String> IsRead()
+        //создает лист со значениями IsRead из MessageInfo
+        {
+            List<string> IsRead = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["IsRead"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    IsRead.Add(dr[type].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            return IsRead;
+        }
+        public static List<String> ClientName()
+        //создает лист с именами на сервере
+        {
+            List<string> ClientName = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM Contact";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["ClientName"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    ClientName.Add(dr[type].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            ClientName.RemoveAt(0);
+            return ClientName;
+        }
+        public static List<String> Avatars()
+        //создает лист аватарами
+        {
+            List<string> Avatars = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM Contact";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["DownloadID"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    Avatars.Add(dr[type].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            Avatars.RemoveAt(0);
+            return Avatars;
+        }
+        public static List<String> Image()
+        //создает лист c картинками
+        {
+            List<string> Image = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["PayloadPath"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    Image.Add(dr[type].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            return Image;
+        }
+        public static List<String> Info()
+        //создает лист c картинками
+        {
+            List<string> Info = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["MessageInfo"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    Info.Add(dr[type].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            return Info;
         }
     }
 }

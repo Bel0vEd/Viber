@@ -16,6 +16,7 @@ namespace ConsoleAgregateMessager
 {
     public static class FindNumber
     {
+
         private static SQLiteDataAdapter sql = new SQLiteDataAdapter();
         
         private static BindingSource bs = new BindingSource();
@@ -54,6 +55,59 @@ namespace ConsoleAgregateMessager
             }
             catch { }
             return IDs;
+        }
+        public static List <String> Default()
+        {
+            List<string> def = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM Accounts";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var num = dt.Columns["IsDefault"];
+                
+                 foreach (DataRow dr in dt.Rows)
+                {
+                    def.Add (dr[num].ToString());  
+                }
+                 
+                connection.Close();
+            }
+            catch { }
+            return def;
+        }
+        public static string Useak()
+        {
+            string nomer = "";
+            try
+            {
+                var IDs = Number();
+                var def = Default();
+                for (int i = 0; i < IDs.Count; i++)
+                {
+                    if (def[i] == "1")
+                    {
+                        nomer = IDs[i];
+                        break;
+                    }
+                    else continue;
+                }
+            }
+            catch { }
+            return nomer;
         }
     }
 }

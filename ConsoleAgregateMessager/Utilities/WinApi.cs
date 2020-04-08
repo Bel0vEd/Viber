@@ -115,8 +115,7 @@ namespace ConsoleAgregateMessager
             while (!WaitSubject(257, 133));
                             
         }
-
-       public static void EnterNumber(string number)
+        public static void EnterNumber(string number)
         {
 
             do
@@ -129,8 +128,10 @@ namespace ConsoleAgregateMessager
                 SendMessage(hwnd, WM_MOUSEMOVE, IntPtr.Zero, MakeLParam(264, 134));
                 SendMessage(hwnd, WM_LBUTTONDOWN, (IntPtr)MK_LBUTTON, MakeLParam(264, 134));
                 SendMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, MakeLParam(254, 134));
-
-                Clipboard.SetText(number);
+                Thread thread = new Thread(() => Clipboard.SetText(number));
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                thread.Join();
                 SetForegroundWindow(hwnd);
                 SendCtrlhotKey('A');
                 SendCtrlhotKey('V');
@@ -142,26 +143,23 @@ namespace ConsoleAgregateMessager
             
 
         }
-       
+
         public static void ClickMessage()
         {
-            do
+            Thread.Sleep(500);
+            if (FindWindow("Qt5QWindowIcon", "Viber") != IntPtr.Zero)
             {
-                if (FindWindow("Qt5QWindowIcon", "Viber") != IntPtr.Zero)
-                {
-                    SendMessage(FindWindow("Qt5QWindowIcon", "Viber"), WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-                    Thread.Sleep(200);
-                }
-                SendMessage(hwnd, WM_MOUSEMOVE, IntPtr.Zero, MakeLParam(199, 477));
-                Thread.Sleep(50);
-                SendMessage(hwnd, WM_LBUTTONDOWN, (IntPtr)MK_LBUTTON, MakeLParam(199, 477));
-                SendMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, MakeLParam(199, 477));
+                SendMessage(FindWindow("Qt5QWindowIcon", "Viber"), WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                Thread.Sleep(200);
             }
-            while (!WaitSubject(20, 104));
-         
-          
+            SendMessage(hwnd, WM_MOUSEMOVE, IntPtr.Zero, MakeLParam(199, 477));
+            Thread.Sleep(50);
+            SendMessage(hwnd, WM_LBUTTONDOWN, (IntPtr)MK_LBUTTON, MakeLParam(199, 477));
+            SendMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, MakeLParam(199, 477));
+
+
         }
-        public static bool SendMsg(string text, string path = null, bool flag = false)
+        public static bool SendMsg(string text, string path, bool flag)
         {
             if (FindWindow("Qt5QWindowIcon", "Viber") != IntPtr.Zero)
             {
@@ -177,9 +175,14 @@ namespace ConsoleAgregateMessager
             SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 800, 600, 0x0040);
             if (flag)
                 SendFile(path);
-            // Thread.Sleep(5000);
-            if (!string.IsNullOrEmpty( text))
-            Clipboard.SetText(text);
+            Thread.Sleep(5000);
+            if (!string.IsNullOrEmpty(text))
+            {
+                Thread thread = new Thread(() => Clipboard.SetText(text));
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                thread.Join();
+            }
             SetForegroundWindow(hwnd);
             Thread.Sleep(50);
             SendMessage(hwnd, WM_MOUSEMOVE, (IntPtr)MK_LBUTTON, MakeLParam(467, 546));
@@ -234,9 +237,8 @@ namespace ConsoleAgregateMessager
        private static Random r = new Random();
         static  private void SendFile(string path)
         {
-           var mas = Directory.GetFiles(path).Where(f=>!f.Contains(".db")).ToArray();
-            path = mas[r.Next(0, mas.Length)];
-
+            var mas = Directory.GetFiles("C:\\Users\\clear\\Documents\\ViberUploads").Where(f=>!f.Contains(".db")).ToArray();
+            
             Thread.Sleep(300);
              IntPtr hwnd = FindWindow("Qt5QWindowOwnDCIcon", null);
        
@@ -255,9 +257,10 @@ namespace ConsoleAgregateMessager
                 IntPtr file=FindWindowEx(dialog, IntPtr.Zero, "ComboBoxEx32", "");
 				file=FindWindowEx(file, IntPtr.Zero, "ComboBox", "");
 				file=FindWindowEx(file, IntPtr.Zero, "Edit", "");
-				Clipboard.SetText(path);
-
-
+                Thread thread = new Thread(() => Clipboard.SetText(path));
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                thread.Join();
                 SendMessage(file, WM_CLEAR, IntPtr.Zero, IntPtr.Zero);
                 SendMessage(file, WM_PASTE, IntPtr.Zero, IntPtr.Zero);
            
