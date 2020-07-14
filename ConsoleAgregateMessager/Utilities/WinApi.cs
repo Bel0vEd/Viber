@@ -103,17 +103,13 @@ namespace ConsoleAgregateMessager
 
         public static void ClickNumber()
         {
-        do { 
-                    if (FindWindow("Qt5QWindowIcon", "Viber") != IntPtr.Zero)
-                    {
-                        SendMessage(FindWindow("Qt5QWindowIcon", "Viber"), WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
-                        Thread.Sleep(100);
-                    }
-                    SetForegroundWindow(hwnd);
-                    SendCtrlhotKey('D');
+            if (FindWindow("Qt5QWindowIcon", "Viber") != IntPtr.Zero)
+            {
+                SendMessage(FindWindow("Qt5QWindowIcon", "Viber"), WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                Thread.Sleep(100);
             }
-            while (!WaitSubject(257, 133));
-                            
+            SetForegroundWindow(hwnd);
+            SendCtrlhotKey('D');
         }
         public static void EnterNumber(string number)
         {
@@ -143,7 +139,22 @@ namespace ConsoleAgregateMessager
             
 
         }
-
+        public static void ReadMessage()
+        {
+            Thread.Sleep(500);
+            SendMessage(hwnd, WM_MOUSEMOVE, IntPtr.Zero, MakeLParam(160, 310));
+            Thread.Sleep(50);
+            SendMessage(hwnd, WM_LBUTTONDOWN, (IntPtr)MK_LBUTTON, MakeLParam(160, 310));
+            SendMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, MakeLParam(160, 310));
+            SendMessage(hwnd, WM_MOUSEMOVE, IntPtr.Zero, MakeLParam(160, 385));
+            Thread.Sleep(50);
+            SendMessage(hwnd, WM_LBUTTONDOWN, (IntPtr)MK_LBUTTON, MakeLParam(160, 385));
+            SendMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, MakeLParam(160, 385));
+            SendMessage(hwnd, WM_MOUSEMOVE, IntPtr.Zero, MakeLParam(160, 460));
+            Thread.Sleep(50);
+            SendMessage(hwnd, WM_LBUTTONDOWN, (IntPtr)MK_LBUTTON, MakeLParam(160, 460));
+            SendMessage(hwnd, WM_LBUTTONUP, IntPtr.Zero, MakeLParam(160, 460));
+        }
         public static void ClickMessage()
         {
             Thread.Sleep(500);

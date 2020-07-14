@@ -93,5 +93,38 @@ namespace ConsoleAgregateMessager
             }
             return lastonline;
         }
+        public static string GetLastMessage()
+        {
+            string lastmessage = "";
+            Thread.Sleep(1000);
+            IntPtr hwnd = CommonCode.FindWindow("Qt5QWindowOwnDCIcon", null);
+            CommonCode.SetWindowPos(hwnd, CommonCode.WndTopMost, 0, 0, 0, 0, CommonCode.SWP_NOSIZE | CommonCode.SWP_SHOWWINDOW);
+            Bitmap screen = new Bitmap(19, 360);
+            using (Graphics g = Graphics.FromImage(screen))
+            {
+                g.CopyFromScreen(749, 144, 0, 0, screen.Size);
+                screen.Save("imagemes1.png");
+                for (int y = screen.Height - 1; y > 0; y--)
+                {
+                    if (lastmessage != "")
+                        break;
+                    for (int x = screen.Width - 1; x > 0; x--)
+                    {
+                        var pixel = screen.GetPixel(x, y);
+                        if (pixel.R == 124 && pixel.G == 105 && pixel.B == 255)
+                        {
+                            lastmessage = "READ";
+                            break;
+                        }
+                        else if (pixel.R == 151 && pixel.G == 164 && pixel.B == 178)
+                        {
+                            lastmessage = "NOT READ";
+                            break;
+                        }
+                    }
+                }
+            }
+            return lastmessage;
+        }
     }
 }

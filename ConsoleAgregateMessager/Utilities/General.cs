@@ -15,6 +15,7 @@ namespace ConsoleAgregateMessager
         public static string Status(string zapros)
         {
             string last = "";
+            string lastmessage = "";
             string status = "";
             string msgstatus = "";
             string chat = "";
@@ -27,6 +28,7 @@ namespace ConsoleAgregateMessager
                 WinApi.EnterNumber(nomer);
                 WinApi.ClickMessage();
                 last = LastOnline.GetLastSeen();
+                lastmessage = LastOnline.GetLastMessage();
             }
             catch (Exception)
             {
@@ -136,7 +138,7 @@ namespace ConsoleAgregateMessager
                 last1 = DateTime.Now.AddMinutes(-1);
                 status = "ok";
             }*/
-            string status1 = "{\"e\":\"status\",\"status\":\"" + status + "\",\"data\":{\"origin\":\"msisdn\",\"to\":\"+7" + nomer + "\",\"channel\":\"viber\",\"name\":\"" + name + "\",\"lastseen\":\"" + last + "\",\"messagestatus\":\"" + msgstatus + "\",\"avatar\":\"" + avatar + "\"}}";
+            string status1 = "{\"e\":\"status\",\"status\":\"" + status + "\",\"data\":{\"origin\":\"msisdn\",\"to\":\"+7" + nomer + "\",\"channel\":\"viber\",\"name\":\"" + name + "\",\"lastseen\":\"" + last + "\",\"messagestatus\":\"" + lastmessage + "\",\"avatar\":\"" + avatar + "\"}}";
             return status1;
         }
         public static string Send(string zapros)
@@ -184,7 +186,7 @@ namespace ConsoleAgregateMessager
             string send = "{\"e\":\"send\",\"status\":\"" + status + "\",\"data\":{\"channel\":\"viber\",\"origin\":\"msisdn\",\"to\":\"+7" + nomer + "\",\"type\":\"" + type + "\",\"text\":\"" + text + "\",\"file\":\"" + path + "\"}}";
             return send;
         }
-        public static string Check(long timelast)
+        public static string Check(long timelast, long idmes)
         {
             string type = "";
             int z = 0;
@@ -195,102 +197,228 @@ namespace ConsoleAgregateMessager
             var info = opendb.Info();
             var timestamps = opendb.TimeStamps();
             var isread = opendb.IsRead();
+            var subject = opendb.Subject();
             var contactidmsg = opendb.ContactIdMsg();
             var body = opendb.Body();
             var contactid = opendb.ContactId();
             var numbers = opendb.Numbers();
+            var clientname = opendb.ClientName();
             var vibercontacts = opendb.ViberContacts();
             var names = opendb.Names();
+            var IdMes = opendb.IdMes();
             var messagestatus = opendb.MessageStatuses();
             int count = contactidmsg.Count;
             string[] newchat = new string[chatidmsg.Count];
-            for (int i = 0; i < isread.Count; i++)
+            if (timelast == 0)
             {
-                if (isread[i] == "0" && messagestatus[i] == "0" && timelast < Convert.ToInt64(timestamps[i]))
+                for (int i = 0; i < isread.Count; i++)
                 {
-                    timelast = Convert.ToInt64(timestamps[timestamps.Count - 1]);
-                    count = i;
-                    break;
-                }
-            }
-            for (int i = count; i < contactidmsg.Count; i++)
-            {
-                if (!newchat.Contains(contactidmsg[i]) && contactidmsg[i] != "1" && isread[i] == "0")
-                {
-                    newchat[z] = contactidmsg[i];
-                    z++;
-                }
-            }
-            string[] newchat1 = new string[z];
-            string[] name = new string[z];
-            string[] nomer = new string[z];
-            string[] messages = new string[z];
-            for (int i = 0; i < z; i++)
-            {
-                name[i] = names[Convert.ToInt32(newchat[i]) - 2];
-                nomer[i] = numbers[Convert.ToInt32(newchat[i]) - 2];
-                newchat1[i] = newchat[i];
-            }
-            string letter = "";
-            string letter1 = "";
-            for (int i = 0; i < z; i++)
-            {
-                int nomermsg = 0;
-                string letter2 = "";
-                string[] tipi = new string[body.Count];
-                for (int ii = count; ii < body.Count; ii++)
-                {
-                    if (isread[ii] == "0" && messagestatus[ii] == "0" && contactidmsg[ii] == newchat1[i])
+                    if (isread[i] == "0" && messagestatus[i] == "0" && timelast < Convert.ToInt64(timestamps[i]))
                     {
-                        if (typemsg[ii] == "1")
-                        {
-                            type = "text";
-                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
-                            nomermsg++;
-                        }
-                        if (typemsg[ii] == "6")
-                        {
-                            type = "voice";
-                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
-                            nomermsg++;
-                        }
-                        if (typemsg[ii] == "11")
-                        {
-                            type = "file";
-                            info[ii] = Regex.Match(info[ii], "(?<=FileName\": \").*?(?=\",)").Value;
-                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + info[ii] + "\"},";
-                            nomermsg++;
-                        }
-                        if (typemsg[ii] == "3")
-                        {
-                            type = "video";
-                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
-                            nomermsg++;
-                        }
-                        if (typemsg[ii] == "2")
-                        {
-                            type = "image";
-                            images[ii] = Regex.Match(images[ii], "(?<=ViberDownloads/).*").Value;
-                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\",\"file\":\"" + images[ii] + "\"},";
-                            nomermsg++;
-                        }
-                        if (body[ii].Contains("https://maps.yandex.ru"))
-                        {
-                            type = "location";
-                            body[ii] = Regex.Match(body[ii], "(?<=ActionBody\":\").*?(?=\")").Value;
-                            letter2 = letter2 + "\"message" + nomermsg + "\":{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
-                            nomermsg++;
-                        }
+                        idmes = Convert.ToInt64(IdMes[IdMes.Count - 1]);
+                        timelast = Convert.ToInt64(timestamps[timestamps.Count - 1]);
+                        count = i;
+                        break;
                     }
-                    letter1 = "\"" + i + "\":{\"sender\":{\"name\":\"" + name[i] + "\",\"msisdn\":\"" + nomer[i] + "\"}," + letter2 + "}";
                 }
-                if(letter1!="")
-                    letter1 = letter1.Substring(0, letter1.Length - 2) + "}";
-                letter = letter.Insert(letter.Length, letter1 + ",");
+                for (int i = count; i < contactidmsg.Count; i++)
+                {
+                    if (!newchat.Contains(contactidmsg[i]) && contactidmsg[i] != "1" && isread[i] == "0")
+                    {
+                        newchat[z] = contactidmsg[i];
+                        z++;
+                    }
+                }
+                string[] newchat1 = new string[z];
+                string[] name = new string[z];
+                string[] nomer = new string[z];
+                string[] messages = new string[z];
+                for (int i = 0; i < z; i++)
+                {
+                    name[i] = names[Convert.ToInt32(newchat[i]) - 2];
+                    if (name[i] == "")
+                        name[i] = clientname[Convert.ToInt32(newchat[i]) - 2];
+                    nomer[i] = numbers[Convert.ToInt32(newchat[i]) - 2];
+                    newchat1[i] = newchat[i];
+                }
+                string letter = "";
+                string letter1 = "";
+                for (int i = 0; i < z; i++)
+                {
+                    string letter2 = "";
+                    string[] tipi = new string[body.Count];
+                    for (int ii = count; ii < body.Count; ii++)
+                    {
+                        if (isread[ii] == "0" && messagestatus[ii] == "0" && contactidmsg[ii] == newchat1[i])
+                        {
+                            if (typemsg[ii] == "1")
+                            {
+                                type = "text";
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            }
+                            if (typemsg[ii] == "4")
+                            {
+                                type = "stiсker";
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            }
+                            if (typemsg[ii] == "72")
+                            {
+                                type = "text";
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + "Сообщение удалено" + "\"},";
+                            }
+                            if (typemsg[ii] == "6")
+                            {
+                                type = "voice";
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            }
+                            if (typemsg[ii] == "11")
+                            {
+                                type = "file";
+                                info[ii] = Regex.Match(info[ii], "(?<=FileName\": \").*?(?=\",)").Value;
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + info[ii] + "\"},";
+                            }
+                            if (typemsg[ii] == "3")
+                            {
+                                type = "video";
+                                images[ii] = Regex.Match(images[ii], "(?<=ViberDownloads/).*").Value;
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            }
+                            if (typemsg[ii] == "2")
+                            {
+                                type = "image";
+                                images[ii] = Regex.Match(images[ii], "(?<=ViberDownloads/).*").Value;
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\",\"file\":\"" + images[ii] + "\"},";
+                            }
+                            if (typemsg[ii] == "10")
+                            {
+                                type = "contact";
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\",\"file\":\"" + subject[ii] + "\"},";
+                            }
+                            if (body[ii].Contains("https://maps.yandex.ru"))
+                            {
+                                type = "location";
+                                body[ii] = Regex.Match(body[ii], "(?<=ActionBody\":\").*?(?=\")").Value;
+                                letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                            }
+                        }
+                        letter1 = "\"" + i + "\":{\"sender\":{\"name\":\"" + name[i] + "\",\"msisdn\":\"" + nomer[i] + "\"}," + "\"messages\":[" + letter2 + "]}";
+                    }
+                    if (letter1 != "" && !letter1.Contains("ges\":[]"))
+                        letter1 = letter1.Substring(0, letter1.Length - 3) + "]}";
+                    letter = letter.Insert(letter.Length, letter1 + ",");
+                }
+                //otvet = "\"0\":{\"sender\":{\"name\":\"Антоша\",\"msisdn\":\"+79828301578\"},\"messages\":[{\"type\":\"text\",\"text\":\"(inlove)\"},{\"type\":\"text\",\"text\":\"1\"},{\"type\":\"text\",\"text\":\"2\"}]}}}}";
+                if (letter != "")
+                    letter = letter.Substring(0, letter.Length - 1);
+
+                check = idmes + "DEL" + timelast + "{\"e\":\"messages\",\"status\":\"ok\",\"data\":{\"origin\":\"" + FindNumber.Useak() + "\",\"channel\":\"viber\",\"chats\":{\"length\": " + z + "," + letter + "}}}".Replace("\\", ""); ;
             }
-            if (letter != "")
-                letter = letter.Substring(0, letter.Length - 1);
-            check = timelast + "{\"e\":\"messages\",\"status\":\"ok\",\"data\":{\"origin\":\"" + FindNumber.Useak() + "\",\"channel\":\"viber\",\"messages\":{\"length\": " + z + "," + letter + "}}}".Replace("\\", ""); ;
+            else
+            {
+                for (int i = 0; i < isread.Count; i++)
+                {
+                    if (messagestatus[i] == "0" && timelast < Convert.ToInt64(timestamps[i]))
+                    {
+                        count = i;
+                        break;
+                    }
+                }
+                for (int i = count; i < contactidmsg.Count; i++)
+                {
+                    if (!newchat.Contains(contactidmsg[i]) && contactidmsg[i] != "1" && timelast < Convert.ToInt64(timestamps[i]))
+                    {
+                        newchat[z] = contactidmsg[i];
+                        z++;
+                    }
+                }
+                string[] newchat1 = new string[z];
+                string[] name = new string[z];
+                string[] nomer = new string[z];
+                string[] messages = new string[z];
+                for (int i = 0; i < z; i++)
+                {
+                    try
+                    {
+                        name[i] = names[Convert.ToInt32(newchat[i]) - 2];
+                    }
+                    catch { };
+                    if (name[i] == "")
+                        name[i] = clientname[Convert.ToInt32(newchat[i]) - 2];
+                    nomer[i] = numbers[Convert.ToInt32(newchat[i]) - 2];
+                    newchat1[i] = newchat[i];
+                }
+                string letter = "";
+                string letter1 = "";
+                for (int i = 0; i < z; i++)
+                {
+                    try
+                    {
+                        string letter2 = "";
+                        string[] tipi = new string[body.Count];
+                        for (int ii = count; ii < body.Count; ii++)
+                        {
+                            if (timelast < Convert.ToInt64(timestamps[ii]) && messagestatus[ii] == "0" && contactidmsg[ii] == newchat1[i])
+                            {
+                                if (typemsg[ii] == "1")
+                                {
+                                    type = "text";
+                                    letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                                }
+                                if (typemsg[ii] == "72")
+                                {
+                                    type = "text";
+                                    letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + "Сообщение удалено" + "\"},";
+                                }
+                                if (typemsg[ii] == "6")
+                                {
+                                    type = "voice";
+                                    letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                                }
+                                if (typemsg[ii] == "11")
+                                {
+                                    type = "file";
+                                    info[ii] = Regex.Match(info[ii], "(?<=FileName\": \").*?(?=\",)").Value;
+                                    letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + info[ii] + "\"},";
+                                }
+                                if (typemsg[ii] == "3")
+                                {
+                                    type = "video";
+                                    images[ii] = Regex.Match(images[ii], "(?<=ViberDownloads/).*").Value;
+                                    letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                                }
+                                if (typemsg[ii] == "2")
+                                {
+                                    type = "image";
+                                    images[ii] = Regex.Match(images[ii], "(?<=ViberDownloads/).*").Value;
+                                    letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\",\"file\":\"" + images[ii] + "\"},";
+                                }
+                                if (typemsg[ii] == "10")
+                                {
+                                    type = "contact";
+                                    letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\",\"file\":\"" + subject[ii] + "\"},";
+                                }
+                                if (body[ii].Contains("https://maps.yandex.ru"))
+                                {
+                                    type = "location";
+                                    body[ii] = Regex.Match(body[ii], "(?<=ActionBody\":\").*?(?=\")").Value;
+                                    letter2 = letter2 + "{\"type\":\"" + type + "\",\"text\":\"" + body[ii] + "\"},";
+                                }
+                            }
+                            letter1 = "\"" + i + "\":{\"sender\":{\"name\":\"" + name[i] + "\",\"msisdn\":\"" + nomer[i] + "\"}," + "\"messages\":[" + letter2 + "]}";
+                        }
+                        if (letter1 != "")
+                            letter1 = letter1.Substring(0, letter1.Length - 3) + "]}";
+                        letter = letter.Insert(letter.Length, letter1 + ",");
+                    }
+                    catch (Exception)
+                    { }
+                }
+                if (letter != "")
+                    letter = letter.Substring(0, letter.Length - 1);
+                idmes = Convert.ToInt64(IdMes[IdMes.Count - 1]);
+                timelast = Convert.ToInt64(timestamps[timestamps.Count - 1]);
+                check = idmes + "DEL" + timelast + "{\"e\":\"messages\",\"status\":\"ok\",\"data\":{\"origin\":\"" + FindNumber.Useak() + "\",\"channel\":\"viber\",\"chats\":{\"length\": " + z + "," + letter + "}}}".Replace("\\", ""); ;
+            }
             return check;
         }
         public static bool ViberWork()

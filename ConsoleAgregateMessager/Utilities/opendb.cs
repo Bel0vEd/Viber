@@ -153,7 +153,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -187,7 +187,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -285,7 +285,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -318,7 +318,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -351,7 +351,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -384,7 +384,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -417,7 +417,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -518,7 +518,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -538,7 +538,7 @@ namespace ConsoleAgregateMessager
             return Image;
         }
         public static List<String> Info()
-        //создает лист c картинками
+        //создает лист c информацией о сообщении
         {
             List<string> Info = new List<string>();
             try
@@ -551,7 +551,7 @@ namespace ConsoleAgregateMessager
                 connection.Open();
                 SQLiteCommand command = new SQLiteCommand(connection);
 
-                command.CommandText = @"SELECT  * FROM MessageInfo";
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
                 command.CommandType = CommandType.Text;
                 command.ExecuteNonQuery();
 
@@ -569,6 +569,156 @@ namespace ConsoleAgregateMessager
             }
             catch { }
             return Info;
+        }
+        public static List<String> Subject()
+        //создает лист c информацией о сообщении
+        {
+            List<string> Subject = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["Subject"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    Subject.Add(dr[type].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            return Subject;
+        }
+        public static List<String> IdMes()
+        //создает лист c информацией о сообщении
+        {
+            List<string> IdMes = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = " + path_config;
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT * FROM MessageInfo ORDER BY TimeStamp";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["EventID"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    IdMes.Add(dr[type].ToString());
+                }
+
+                connection.Close();
+            }
+            catch { }
+            return IdMes;
+        }
+        public static long LastMessageId()
+        //создает лист c информацией о сообщении
+        {
+            List<string> LastMessageId = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = CheckMessage.db";
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM Message";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["IdMessage"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    LastMessageId.Add(dr[type].ToString());
+                }
+                connection.Close();
+            }
+            catch { }
+            return Convert.ToInt64(LastMessageId.Last());
+        }
+        public static long LastMessageTime()
+        //создает лист c информацией о сообщении
+        {
+            List<string> LastMessageTime = new List<string>();
+            try
+            {
+                DataTable dt = new DataTable();
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+
+                connection.ConnectionString = "Data Source = CheckMessage.db";
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+
+                command.CommandText = @"SELECT  * FROM Message";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+
+                sql.SelectCommand = command;
+                sql.Fill(dt);
+
+                bs.DataSource = dt;
+                var type = dt.Columns["Time"];
+                foreach (DataRow dr in dt.Rows)
+                {
+                    LastMessageTime.Add(dr[type].ToString());
+                }
+                connection.Close();
+            }
+            catch { }
+            return Convert.ToInt64(LastMessageTime.Last());
+        }
+        public static int Insert(long id, long time)
+        //создает лист c информацией о сообщении
+        {
+            List<string> LastMessageTime = new List<string>();
+            try
+            {
+                factory = (SQLiteFactory)DbProviderFactories.GetFactory("System.Data.SQLite");
+                connection = (SQLiteConnection)factory.CreateConnection();
+                connection.ConnectionString = "Data Source = CheckMessage.db";
+                connection.Open();
+                SQLiteCommand command = new SQLiteCommand(connection);
+                command.CommandText = @"INSERT INTO Message ('IdMessage', 'Time') values ('" + id + "', '" + time + "')";
+                command.CommandType = CommandType.Text;
+                command.ExecuteNonQuery();
+                sql.SelectCommand = command;
+                connection.Close();
+            }
+            catch { }
+            return 1;
         }
     }
 }

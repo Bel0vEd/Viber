@@ -18,7 +18,8 @@ namespace ConsoleAgregateMessager
         public static bool IsConnected = true;
         public static string otvet = "";
         public static string vconsol = "";
-        public static long timelast = 0;
+        public static long timelast = opendb.LastMessageTime();
+        public static long idmes = opendb.LastMessageId();
         static void Main(string[] args)
         {
             int viber1 = 0;
@@ -53,12 +54,17 @@ namespace ConsoleAgregateMessager
                 System.Threading.Timer timer = new System.Threading.Timer(tm, null, 10000, 60000);
                 void Count(object obj)
                 {
-                    otvet = General.Check(timelast);
-                    timelast = Convert.ToInt64(Regex.Match(otvet, ".*(?={\"e\":\")").Value);
+                    bool pr = ws.IsAlive;
+                    otvet = General.Check(timelast,idmes);
+                    idmes = Convert.ToInt64(Regex.Match(otvet, ".*(?=DEL)").Value);
+                    timelast = Convert.ToInt64(Regex.Match(otvet, "(?<=DEL).*(?={\"e\":\")").Value);
                     otvet = Regex.Match(otvet, "{\"e.*").Value;
                     string lengh = Regex.Match(otvet, "(?<=length\": ).*(?=}}})").Value;
                     if (lengh != "0,")
                     {
+                        opendb.Insert(idmes, timelast);
+                        WinApi.StartWork();
+                        WinApi.ReadMessage();
                         ws.Send(otvet);
                         Console.WriteLine(DateTime.UtcNow.ToString("yyyy-MM-ddTHH\\:mm\\:ss ") + FindNumber.Useak() + " Новые сообщения");
                     }
@@ -69,7 +75,7 @@ namespace ConsoleAgregateMessager
                 telo = telo.Replace("\\", "");
                 ws.OnMessage += (sender, e) =>
                 {
-                    if (e.Data.Contains("\"e\":\"status\",\"data\":{\"channel\":\"viber\"".Replace("\\", "")) && General.ViberWork())
+                    if (e.Data.Contains("\"e\":\"status\"".Replace("\\", "")) && General.ViberWork())
                     {
                         otvet = General.Status(e.Data);
                         otvet = otvet.Replace("msisdn", FindNumber.Useak());
@@ -83,7 +89,7 @@ namespace ConsoleAgregateMessager
                         Console.WriteLine(DateTime.UtcNow.ToString("yyyy-MM-ddTHH\\:mm\\:ss ") + " Viber не авторизован ");
                         return;
                     }
-                    else if (e.Data.Contains("{\"e\":\"send\",\"data\":{\"channel\":\"viber\"".Replace("\\", "")) && General.ViberWork())
+                    else if (e.Data.Contains("{\"e\":\"send\"".Replace("\\", "")) && General.ViberWork())
                     {
                         otvet = General.Send(e.Data);
                         otvet = otvet.Replace("msisdn", FindNumber.Useak());
@@ -98,6 +104,10 @@ namespace ConsoleAgregateMessager
                         return;
                     }
                     Console.WriteLine(e.Data);
+                };
+                ws.OnError += (sender, e) =>
+                {
+                    IsConnected = false;
                 };
                 ws.OnClose += (sender, e) =>
                 {
